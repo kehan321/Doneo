@@ -1,11 +1,20 @@
+import 'package:doneo/splash/splash_screen.dart';
 import 'package:doneo/todo/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensures bindings are initialized
+  await Firebase.initializeApp(); // Initialize Firebase
+
   Get.put(CardController()); // Initialize Controller
   Get.put(DialogController()); // Initialize Dialog Controller
+
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     home: TodoScreen(),

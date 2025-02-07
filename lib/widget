@@ -1,0 +1,63 @@
+Widget _buildTaskCard(Map<String, dynamic> todo) {
+  // Get the current time and compare with start and end times.
+  DateTime now = DateTime.now();
+  DateTime startDateTime = DateTime(now.year, now.month, now.day, _startTime.hour, _startTime.minute);
+  DateTime endDateTime = DateTime(now.year, now.month, now.day, _endTime.hour, _endTime.minute);
+
+  // Determine the border color based on the time comparison.
+  BorderSide borderSide;
+  if (now.isAfter(startDateTime) && now.isBefore(endDateTime)) {
+    // Current time is between start and end time, so task is active.
+    borderSide = BorderSide(color: Colors.green, width: 2);
+  } else {
+    // Task is not active.
+    borderSide = BorderSide(color: Colors.grey, width: 1);
+  }
+
+  Color cardColor = todo['completed'] ? Colors.green[100]! : Colors.white;
+
+  return Dismissible(
+    key: Key(todo['id'].toString()),
+    direction: DismissDirection.endToStart,
+    onDismissed: (_) => controller.deleteTodo(todo['id']),
+    background: Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      alignment: Alignment.centerRight,
+      decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(12)),
+      child: Icon(Icons.delete, color: Colors.white),
+    ),
+    child: Card(
+      elevation: 2,
+      shadowColor: Colors.black.withOpacity(0.1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: borderSide, // Apply dynamic border based on time
+      ),
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      color: cardColor,
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        title: Text(
+          todo['title'],
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: Colors.black87,
+            decoration: todo['completed'] ? TextDecoration.lineThrough : TextDecoration.none,
+          ),
+        ),
+        leading: Checkbox(
+          value: todo['completed'],
+          onChanged: (value) => controller.updateTodo(todo['id'], todo['title'], value!),
+          activeColor: Colors.blueGrey[800],
+          side: BorderSide(color: Colors.blueGrey[800]!, width: 1.5),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.delete, color: Colors.red, size: 20),
+          onPressed: () => controller.deleteTodo(todo['id']),
+        ),
+      ),
+    ),
+  );
+}

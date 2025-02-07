@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "891226107480",
+    "project_id": "alert-master-cd304",
+    "storage_bucket": "alert-master-cd304.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891226107480:android:ca6e9187fa76475450a42d",
+        "android_client_info": {
+          "package_name": "com.exa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNMVzq-uL2YZ08DTreXq2610GkM2adzcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891226107480:android:1de2f7e57924bffd50a42d",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNMVzq-uL2YZ08DTreXq2610GkM2adzcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891226107480:android:a6a3199c3b11efa050a42d",
+        "android_client_info": {
+          "package_name": "com.example.doneo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNMVzq-uL2YZ08DTreXq2610GkM2adzcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
