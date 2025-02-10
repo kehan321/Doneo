@@ -53,6 +53,8 @@ dependencies:
   timezone:
   workmanager:
   flutter_local_notifications:
+  flutter_datetime_picker_plus:
+
   # flutter_local_notifications: ^18.0.1y
 
 dependencies_overrides:
