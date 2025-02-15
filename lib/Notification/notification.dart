@@ -1,62 +1,34 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
-  final FlutterLocalNotificationsPlugin notificationsPlugin =
+  static final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future<void> initNotification() async {
-    AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('flutter_logo');
+  static Future<void> init() async {
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid);
+    final InitializationSettings initSettings =
+        InitializationSettings(android: androidSettings);
 
-    await notificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse:
-            (NotificationResponse notificationResponse) async {
-      // Handle notification response here if needed.
-    });
+    await notificationsPlugin.initialize(initSettings);
   }
 
-  notificationDetails() {
+  static NotificationDetails _notificationDetails() {
     return const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'channelId',
-          'channelName',
-          importance: Importance.max,
-          priority: Priority.high, // Ensures high priority notifications
-          enableLights: true, // Enable lights
-          enableVibration: true, // Enable vibration
-          playSound: true, // Play sound
-          timeoutAfter: 60000, // Optional timeout value for idle notifications
-        ));
+      android: AndroidNotificationDetails(
+        'channel_id',
+        'Scheduled Notification',
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+    );
   }
 
-  Future showNotification(
-      {int id = 0, String? title, String? body, String? payLoad}) async {
-    return notificationsPlugin.show(
-        id, title, body, await notificationDetails());
-  }
-
-  Future scheduleNotification(
-      {int id = 0,
-      String? title,
-      String? body,
-      String? payLoad,
-      required DateTime scheduledNotificationDateTime}) async {
-    return notificationsPlugin.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.from(
-          scheduledNotificationDateTime,
-          tz.local,
-        ),
-        await notificationDetails(),
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidScheduleMode: AndroidScheduleMode.exact); // Added androidScheduleMode
+  static Future<void> showNotification(
+      int id, String title, String body) async {
+    await notificationsPlugin.show(id, title, body, _notificationDetails());
   }
 }

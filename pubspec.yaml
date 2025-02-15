@@ -54,6 +54,8 @@ dependencies:
   workmanager:
   flutter_local_notifications:
   flutter_datetime_picker_plus:
+  android_alarm_manager_plus:
+  push:
 
   # flutter_local_notifications: ^18.0.1y
 

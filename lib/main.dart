@@ -4,7 +4,6 @@
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:get/get.dart';
 
-
 // import 'package:firebase_core/firebase_core.dart';
 
 // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -13,8 +12,6 @@
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized(); // Ensures bindings are initialized
 //   await Firebase.initializeApp(); // Initialize Firebase
-  
-
 
 //   runApp(GetMaterialApp(
 //     debugShowCheckedModeBanner: false,
@@ -22,14 +19,8 @@
 //   ));
 // }
 
-
-
-
-
-
 // import 'package:doneo/Notification/notification.dart';
 // import 'package:flutter/material.dart';
-
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
@@ -71,124 +62,117 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-import 'package:doneo/Notification/notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
-
-
-import 'package:flutter/material.dart';
-import 'package:timezone/data/latest.dart' as tz;
-
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  NotificationService().initNotification();
-  tz.initializeTimeZones();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
+
+  void _initializeNotifications() async {
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    
+    const InitializationSettings initSettings =
+        InitializationSettings(android: androidSettings);
+
+    await _flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        print("Notification Clicked: ${response.payload}");
+      },
+    );
+  }
+
+  Future<void> _showNotification() async {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'channel_id',
+      'General Notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+    );
+
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidDetails);
+
+    await _flutterLocalNotificationsPlugin.show(
+      0,
+      'Hello!',
+      'This is a local notification.',
+      notificationDetails,
+      payload: 'Notification Clicked',
+    );
+  }
+
+
+Future<void> _scheduleNotification() async {
+  tz.initializeTimeZones();
+
+  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    'channel_id',
+    'Scheduled Notifications',
+    importance: Importance.high,
+    priority: Priority.high,
+    playSound: true,
+  );
+
+  const NotificationDetails notificationDetails =
+      NotificationDetails(android: androidDetails);
+
+  await _flutterLocalNotificationsPlugin.zonedSchedule(
+    1,
+    'Scheduled Notification',
+    'This will appear after 5 seconds!',
+    tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+    notificationDetails,
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Notifications',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Local Notifications'),
-    );
-  }
-}
-
-
-DateTime scheduleTime = DateTime.now();
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            DatePickerTxt(),
-            ScheduleBtn(),
-          ],
+      home: Scaffold(
+        appBar: AppBar(title: Text("Flutter Local Notifications")),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _showNotification,
+                child: Text("Show Notification"),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _scheduleNotification,
+                child: Text("Schedule Notification"),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class DatePickerTxt extends StatefulWidget {
-  const DatePickerTxt({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<DatePickerTxt> createState() => _DatePickerTxtState();
-}
-
-class _DatePickerTxtState extends State<DatePickerTxt> {
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        DatePicker.showDateTimePicker(
-          context,
-          showTitleActions: true,
-          onChanged: (date) => scheduleTime = date,
-          onConfirm: (date) {},
-        );
-      },
-      child: const Text(
-        'Select Date Time',
-        style: TextStyle(color: Colors.blue),
-      ),
-    );
-  }
-}
-
-class ScheduleBtn extends StatelessWidget {
-  const ScheduleBtn({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: const Text('Schedule notifications'),
-      onPressed: () {
-        debugPrint('Notification Scheduled for $scheduleTime');
-        NotificationService().scheduleNotification(
-            title: 'Scheduled Notification',
-            body: '$scheduleTime',
-            scheduledNotificationDateTime: scheduleTime);
-      },
     );
   }
 }
